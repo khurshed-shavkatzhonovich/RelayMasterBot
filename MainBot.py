@@ -22,9 +22,8 @@ async def main():
         # Проверяем, пришло ли сообщение от кого-либо для receiver_id
         if event.message.sender_id != forward_to_id:
             # Копируем только-что присланное сообщение для receiver_id
-            copied_message = await event.message.forward_to(receiver_id)
-            # Отправляем скопированное сообщение от имени receiver_id на аккаунт forward_to_id
-            await forward_client.send_message(forward_to_id, copied_message)
+            # и отправляем от имени receiver_id на аккаунт forward_to_id
+            await event.message.forward_to(forward_to_id)    
 
     # Запускаем клиенты
     await receiver_client.run_until_disconnected()
