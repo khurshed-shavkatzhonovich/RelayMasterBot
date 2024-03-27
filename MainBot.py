@@ -19,12 +19,12 @@ async def main():
     # Устанавливаем обработчик для получения сообщений
     @receiver_client.on(events.NewMessage)
     async def handler(event):
-        # Получаем ID отправителя и ID сообщения
-        sender_id = event.message.sender_id
-        message_id = event.message.id
-        if sender_id != receiver_id:  # Если отправитель не является получателем
-            # Копируем сообщение и отправляем на нужного пользователя
-            await forward_client.forward_messages(forward_to_id, event.message)
+        # Проверяем, пришло ли сообщение от кого-либо для receiver_id
+        if event.message.sender_id != forward_to_id:
+            # Копируем только-что присланное сообщение для receiver_id
+            copied_message = await event.message.forward_to(receiver_id)
+            # Отправляем скопированное сообщение от имени receiver_id на аккаунт forward_to_id
+            await forward_client.send_message(forward_to_id, copied_message)
 
     # Запускаем клиенты
     await receiver_client.run_until_disconnected()
